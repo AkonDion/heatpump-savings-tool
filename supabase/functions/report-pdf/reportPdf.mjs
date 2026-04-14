@@ -150,7 +150,7 @@ const renderDailyRows = (days = [], unit) =>
           <td class="num">${formatTemperature(day.meanTempF, unit)}</td>
           <td class="num">${formatTemperature(day.minTempF, unit)}</td>
           <td class="num">${formatTemperature(day.maxTempF, unit)}</td>
-          <td>${escapeHtml(day.context)}</td>
+          <td class="context-col">${escapeHtml(day.context)}</td>
           <td class="num">${formatNumber(day.cop, 2)}</td>
           <td class="num">${formatPercent(day.fractionAboveCutout, 0)}</td>
           <td class="num">${formatPercent(day.fractionBelowCutout, 0)}</td>
@@ -519,6 +519,19 @@ const reportStyles = `
   .daily-table td {
     padding: 4px 5px;
     font-size: 7.4px;
+    text-align: center;
+  }
+
+  .daily-table th.context-col,
+  .daily-table td.context-col {
+    width: 22%;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .daily-table .num {
+    text-align: center;
   }
 
   .note {
@@ -557,7 +570,7 @@ export function renderReportPdfHtml(report = {}) {
           )}</p>
           <h1>${escapeHtml(report.report?.title ?? 'Propane to heat pump savings report')}</h1>
           <p class="subtitle">${escapeHtml(
-            report.report?.subtitle ?? 'Weather-aware hybrid operating-cost estimate',
+            'Estimated savings only. Actual operating costs will vary with weather, thermostat settings, home characteristics, utility rates, and system performance.',
           )}</p>
         </div>
         <aside class="meta-panel">
@@ -754,7 +767,7 @@ export function renderReportPdfHtml(report = {}) {
               <th class="num">Mean</th>
               <th class="num">Min</th>
               <th class="num">Max</th>
-              <th>Operating context</th>
+              <th class="context-col">Operating context</th>
               <th class="num">COP</th>
               <th class="num">HP share</th>
               <th class="num">Backup</th>

@@ -1387,7 +1387,8 @@ function ResultsSection({
               {formatCurrency(result.estimatedSavings)}
             </p>
             <p className="mt-3 text-sm leading-6 text-neutral-600">
-              Compared with the entered propane spend for {modelName || 'the selected heat pump'}.
+              Estimated savings only. Actual operating costs will vary with weather, thermostat settings, home
+              characteristics, utility rates, and system performance.
             </p>
           </div>
 
