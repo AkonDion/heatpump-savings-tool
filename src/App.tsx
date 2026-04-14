@@ -766,9 +766,9 @@ function App() {
     <main className="min-h-screen bg-neutral-50 text-neutral-950">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="max-w-3xl">
+          <div>
             <p className="mb-3 text-sm font-semibold uppercase text-teal-700">Comfort Hub hybrid heating estimator</p>
-            <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
+            <h1 className="text-3xl font-semibold leading-tight sm:text-[2.75rem]">
               Propane to heat pump savings report.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-neutral-600">
