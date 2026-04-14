@@ -49,8 +49,6 @@ export type ReportPdfPayload = {
 export type SharedReportRecord = {
   share_id: string
   customer_name: string
-  customer_address: string
-  customer_email: string
   form_state: SharedReportFormState
   report_data: ReportPdfPayload
   created_at: string
@@ -58,8 +56,6 @@ export type SharedReportRecord = {
 
 type CreateSharedReportInput = {
   customerName: string
-  customerAddress: string
-  customerEmail: string
   formState: SharedReportFormState
   reportData: ReportPdfPayload
 }
@@ -87,8 +83,6 @@ export const getShareUrl = (shareId: string) => `${getShareBaseUrl()}/${shareId}
 
 export async function createSharedReport({
   customerName,
-  customerAddress,
-  customerEmail,
   formState,
   reportData,
 }: CreateSharedReportInput) {
@@ -99,8 +93,6 @@ export async function createSharedReport({
       .insert({
         share_id: shareId,
         customer_name: customerName.trim(),
-        customer_address: customerAddress.trim(),
-        customer_email: customerEmail.trim(),
         form_state: formState,
         report_data: reportData,
       })
@@ -126,7 +118,7 @@ export async function loadSharedReport(shareId: string) {
   const { data, error } = await supabase
     .from('shared_reports')
     .select(
-      'share_id, customer_name, customer_address, customer_email, form_state, report_data, created_at',
+      'share_id, customer_name, form_state, report_data, created_at',
     )
     .eq('share_id', shareId)
     .single()

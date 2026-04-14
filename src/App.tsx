@@ -57,8 +57,6 @@ type SharedLoadState =
 type ShareDialogState = {
   isOpen: boolean
   name: string
-  address: string
-  email: string
   status: 'idle' | 'loading' | 'success' | 'error'
   shareUrl: string | null
   error: string | null
@@ -139,8 +137,6 @@ const reportPdfFilename = 'comfort-hub-hybrid-heating-report.pdf'
 const defaultShareDialogState: ShareDialogState = {
   isOpen: false,
   name: '',
-  address: '',
-  email: '',
   status: 'idle',
   shareUrl: null,
   error: null,
@@ -629,7 +625,7 @@ function App() {
   }
 
   const updateShareField =
-    (field: 'name' | 'address' | 'email') =>
+    (field: 'name') =>
     (event: ChangeEvent<HTMLInputElement>) => {
       setShareDialogState((state) => ({
         ...state,
@@ -646,14 +642,12 @@ function App() {
     }
 
     const customerName = shareDialogState.name.trim()
-    const customerAddress = shareDialogState.address.trim()
-    const customerEmail = shareDialogState.email.trim()
 
-    if (!customerName || !customerAddress || !customerEmail) {
+    if (!customerName) {
       setShareDialogState((state) => ({
         ...state,
         status: 'error',
-        error: 'Enter a name, address, and email before sharing.',
+        error: 'Enter a name before sharing.',
       }))
       return
     }
@@ -692,8 +686,6 @@ function App() {
       })
       const { shareUrl } = await createSharedReport({
         customerName,
-        customerAddress,
-        customerEmail,
         formState,
         reportData,
       })
@@ -877,8 +869,6 @@ function App() {
           <ShareDialog
             state={shareDialogState}
             onNameChange={updateShareField('name')}
-            onAddressChange={updateShareField('address')}
-            onEmailChange={updateShareField('email')}
             onClose={closeShareDialog}
             onShare={submitShare}
           />
@@ -937,15 +927,11 @@ function DownloadIcon({ className }: { className?: string }) {
 function ShareDialog({
   state,
   onNameChange,
-  onAddressChange,
-  onEmailChange,
   onClose,
   onShare,
 }: {
   state: ShareDialogState
   onNameChange: (event: ChangeEvent<HTMLInputElement>) => void
-  onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void
-  onEmailChange: (event: ChangeEvent<HTMLInputElement>) => void
   onClose: () => void
   onShare: () => void
 }) {
@@ -982,14 +968,6 @@ function ShareDialog({
           <label className="grid gap-2">
             <span className="text-sm font-medium text-neutral-700">Name</span>
             <input className={inputClassName} type="text" value={state.name} onChange={onNameChange} />
-          </label>
-          <label className="grid gap-2">
-            <span className="text-sm font-medium text-neutral-700">Address</span>
-            <input className={inputClassName} type="text" value={state.address} onChange={onAddressChange} />
-          </label>
-          <label className="grid gap-2">
-            <span className="text-sm font-medium text-neutral-700">Email</span>
-            <input className={inputClassName} type="email" value={state.email} onChange={onEmailChange} />
           </label>
         </div>
 
