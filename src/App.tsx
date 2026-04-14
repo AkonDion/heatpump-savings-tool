@@ -22,6 +22,7 @@ import {
   type SharedReportRecord,
   type TemperatureUnit,
 } from './sharing'
+import { useAuth } from './auth'
 import { appConfig } from './config'
 import { fetchOttawaHistoricalWeather, type DailyWeather } from './weather'
 
@@ -284,6 +285,7 @@ const buildReportPdfPayload = ({
 }
 
 function App() {
+  const { signOut } = useAuth()
   const [sharedReportId] = useState(() => getSharedReportIdFromPath(window.location.pathname))
   const [propaneLitres, setPropaneLitres] = useState(defaultCustomerInputs.propaneLitres)
   const [propaneCost, setPropaneCost] = useState(defaultCustomerInputs.propaneCost)
@@ -763,15 +765,26 @@ function App() {
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-950">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        <header className="max-w-3xl">
-          <p className="mb-3 text-sm font-semibold uppercase text-teal-700">Comfort Hub hybrid heating estimator</p>
-          <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
-            Weather-aware propane to heat pump savings.
-          </h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-neutral-600">
-            Use real propane spend, Ottawa historical weather, and the key NEEP heating points to estimate hybrid
-            operating cost.
-          </p>
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="max-w-3xl">
+            <p className="mb-3 text-sm font-semibold uppercase text-teal-700">Comfort Hub hybrid heating estimator</p>
+            <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
+              Weather-aware propane to heat pump savings.
+            </h1>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-neutral-600">
+              Use real propane spend, Ottawa historical weather, and the key NEEP heating points to estimate hybrid
+              operating cost.
+            </p>
+          </div>
+          {!isSharedView && (
+            <button
+              className="shrink-0 self-start rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 transition hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-teal-100"
+              type="button"
+              onClick={() => void signOut()}
+            >
+              Sign out
+            </button>
+          )}
         </header>
 
         <section className="grid gap-5 lg:grid-cols-2">
@@ -949,7 +962,7 @@ function ShareDialog({
   const shareComplete = state.status === 'success' && Boolean(state.shareUrl)
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
       <section className="w-full max-w-lg rounded-lg bg-white p-5 shadow-xl ring-1 ring-neutral-200 sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -957,7 +970,7 @@ function ShareDialog({
             <h2 className="mt-1 text-2xl font-semibold">Customer details</h2>
           </div>
           <button
-            className="rounded px-3 py-2 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900"
+            className="rounded-md px-3 py-2 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900"
             type="button"
             onClick={onClose}
           >
@@ -1256,7 +1269,7 @@ function NeepInputs({
       <div className="mt-6">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[500px] border-separate border-spacing-y-2 text-sm">
-            <thead className="text-left text-xs uppercase text-neutral-500">
+            <thead className="text-left text-xs uppercase tracking-wide text-neutral-500">
               <tr>
                 <th className="px-2 font-semibold">Outdoor temp</th>
                 <th className="px-2 font-semibold">COP</th>
@@ -1301,7 +1314,7 @@ function NeepInputs({
                   <td className="px-2 text-right">
                     {!isReadOnly && (
                       <button
-                        className="rounded px-2 py-2 text-sm font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="rounded-md px-2 py-2 text-sm font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-40"
                         type="button"
                         disabled={performanceRows.length <= 1}
                         onClick={() => onRemovePerformanceRow(row.id)}
@@ -1345,9 +1358,9 @@ function ResultsSection({
     <section className="rounded-lg bg-white p-5 shadow-sm ring-1 ring-neutral-200 sm:p-6">
       <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="mt-1 text-2xl font-semibold">Weather-aware hybrid estimate</h2>
+          <h2 className="text-2xl font-semibold">Weather-aware hybrid estimate</h2>
         </div>
-        <p className="rounded bg-teal-50 px-3 py-2 text-sm font-medium text-teal-800">
+        <p className="rounded-md bg-teal-50 px-3 py-2 text-sm font-medium text-teal-800">
           Using Ottawa historical weather
         </p>
       </div>
@@ -1608,12 +1621,12 @@ function AdvancedWeatherAnalysis({
           <div>
             <p className="text-sm font-semibold uppercase text-teal-700">Advanced analysis</p>
             <h2 className="mt-1 text-xl font-semibold">Advanced weather + operation analysis</h2>
-            <p className="mt-1 max-w-3xl text-sm leading-6 text-neutral-600">
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-600">
               Detailed view of how Ottawa weather, cutout temperature, and COP interpolation shape
               the estimate.
             </p>
           </div>
-          <span className="rounded bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-700">
+          <span className="rounded-md bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-700">
             {isAnalysisOpen ? 'Hide detail' : 'Open detail'}
           </span>
         </div>
@@ -1669,7 +1682,7 @@ function AdvancedWeatherAnalysis({
             </p>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[860px] text-left text-sm">
-                <thead className="border-b border-neutral-200 text-xs uppercase text-neutral-500">
+                <thead className="border-b border-neutral-200 text-xs uppercase tracking-wide text-neutral-500">
                   <tr>
                     <th className="py-3 pr-4 font-semibold">Band</th>
                     <th className="py-3 pr-4 font-semibold">Days</th>
@@ -1823,7 +1836,7 @@ function AdvancedWeatherAnalysis({
             </summary>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[760px] text-left text-sm">
-                <thead className="border-b border-neutral-200 text-xs uppercase text-neutral-500">
+                <thead className="border-b border-neutral-200 text-xs uppercase tracking-wide text-neutral-500">
                   <tr>
                     <th className="py-3 pr-4 font-semibold">Date</th>
                     <th className="py-3 pr-4 font-semibold">Mean</th>
@@ -1868,7 +1881,7 @@ function SectionHeader({ eyebrow, title, body }: { eyebrow: string; title: strin
     <div>
       <p className="text-sm font-semibold uppercase text-teal-700">{eyebrow}</p>
       <h2 className="mt-1 text-xl font-semibold">{title}</h2>
-      <p className="mt-1 text-sm leading-6 text-neutral-600">{body}</p>
+      <p className="mt-2 text-sm leading-6 text-neutral-600">{body}</p>
     </div>
   )
 }
@@ -2014,7 +2027,7 @@ function NumberTableInput({
 function ResultMetric({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-sm text-neutral-500">{label}</p>
+      <p className="text-sm text-neutral-600">{label}</p>
       <p className="mt-1 text-2xl font-semibold">{value}</p>
     </div>
   )
@@ -2023,7 +2036,7 @@ function ResultMetric({ label, value }: { label: string; value: string }) {
 function CompactMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg bg-neutral-50 p-4">
-      <p className="text-xs font-semibold uppercase text-neutral-500">{label}</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">{label}</p>
       <p className="mt-2 text-xl font-semibold text-neutral-950">{value}</p>
     </div>
   )
@@ -2046,8 +2059,8 @@ function CostBar({
         <span className="font-medium">{label}</span>
         <span className="text-neutral-600">{value}</span>
       </div>
-      <div className="h-4 rounded bg-neutral-100">
-        <div className={`h-4 rounded ${dark ? 'bg-neutral-800' : 'bg-teal-600'}`} style={{ width }} />
+      <div className="h-3.5 overflow-hidden rounded-full bg-neutral-100">
+        <div className={`h-3.5 rounded-full ${dark ? 'bg-neutral-800' : 'bg-teal-600'}`} style={{ width }} />
       </div>
     </div>
   )
@@ -2064,8 +2077,8 @@ function StatusMessage({ tone, message }: { tone: 'neutral' | 'error'; message: 
 
 function BreakdownItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid gap-1 py-3 sm:border-t sm:border-neutral-200">
-      <dt className="text-neutral-500">{label}</dt>
+    <div className="grid gap-1.5 py-3 sm:border-t sm:border-neutral-200">
+      <dt className="text-neutral-600">{label}</dt>
       <dd className="font-semibold text-neutral-950">{value}</dd>
     </div>
   )
