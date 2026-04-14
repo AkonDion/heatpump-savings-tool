@@ -768,8 +768,8 @@ function App() {
         <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-3xl">
             <p className="mb-3 text-sm font-semibold uppercase text-teal-700">Comfort Hub hybrid heating estimator</p>
-            <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
-              Weather-aware propane to heat pump savings.
+            <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
+              Propane to heat pump savings report.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-neutral-600">
               Use real propane spend, Ottawa historical weather, and the key NEEP heating points to estimate hybrid
