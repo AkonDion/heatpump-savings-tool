@@ -827,7 +827,6 @@ function App() {
         {reportAttempted && !result && (
           <ResultsSection
             result={result}
-            modelName={modelName}
             propaneCost={customerInputs.propaneCost}
             weatherState={weatherState}
             calculationError={calculationView.error}
@@ -841,7 +840,6 @@ function App() {
           <div id="savings-report" className="grid gap-8">
             <ResultsSection
               result={result}
-              modelName={modelName}
               propaneCost={customerInputs.propaneCost}
               weatherState={weatherState}
               calculationError={calculationView.error}
@@ -1313,7 +1311,6 @@ function NeepInputs({
 
 type ResultsSectionProps = {
   result: WeatherAwareCalculationResult | null
-  modelName: string
   propaneCost: number
   weatherState: WeatherState
   calculationError: string | null
@@ -1324,7 +1321,6 @@ type ResultsSectionProps = {
 
 function ResultsSection({
   result,
-  modelName,
   propaneCost,
   weatherState,
   calculationError,
